@@ -13,6 +13,7 @@ const (
 
 	// ---- AUTH & USER ERRORS ----
 	ErrUserNotFound    Code = "USER_NOT_FOUND"
+	ErrSessionNotFound Code = "SESSION_NOT_FOUND"
 	ErrInvalidPassword Code = "INVALID_PASSWORD"
 
 	// ---- WALLET & TRANSACTION ERRORS ----

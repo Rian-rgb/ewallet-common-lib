@@ -16,7 +16,7 @@ func (c Code) ToHTTPStatus() int {
 	case ErrForbidden:
 		return http.StatusForbidden
 
-	case ErrNotFound, ErrUserNotFound, ErrTransactionNotFound:
+	case ErrNotFound, ErrUserNotFound, ErrTransactionNotFound, ErrSessionNotFound:
 		return http.StatusNotFound
 
 	case ErrInsufficientBalance:
