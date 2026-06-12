@@ -5,11 +5,11 @@ type Code string
 const (
 
 	// ---- GENERAL ERRORS ----
-	ErrInternal     Code = "INTERNAL_ERROR"
-	ErrBadRequest   Code = "BAD_REQUEST"
-	ErrUnauthorized Code = "UNAUTHORIZED"
-	ErrForbidden    Code = "FORBIDDEN"
-	ErrNotFound     Code = "NOT_FOUND"
+	ErrInternalError Code = "INTERNAL_ERROR"
+	ErrBadRequest    Code = "BAD_REQUEST"
+	ErrUnauthorized  Code = "UNAUTHORIZED"
+	ErrForbidden     Code = "FORBIDDEN"
+	ErrNotFound      Code = "NOT_FOUND"
 
 	// ---- AUTH & USER ERRORS ----
 	ErrUserNotFound    Code = "USER_NOT_FOUND"
