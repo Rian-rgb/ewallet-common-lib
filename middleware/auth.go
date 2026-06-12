@@ -18,7 +18,7 @@ type CustomClaims struct {
 	ExpiresAt time.Time
 }
 
-func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Client) gin.HandlerFunc {
+func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Repository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
 			codeUnauthorized    = errors.ErrUnauthorized
