@@ -1,0 +1,81 @@
+package security
+
+import (
+	"fmt"
+	"github.com/golang-jwt/jwt/v5"
+	"time"
+)
+
+type ClaimToken struct {
+	UserID   int    `json:"user_id"`
+	Username string `json:"username"`
+	FullName string `json:"fullName"`
+	jwt.RegisteredClaims
+}
+
+type JWTManager struct {
+	secretKey     []byte
+	tokenDuration map[string]time.Duration
+	issuer        string
+}
+
+func NewJWTManager(secret string, issuer string) *JWTManager {
+
+	tokenDuration := map[string]time.Duration{
+		"token":         3 * time.Hour,
+		"refresh_token": 72 * time.Hour,
+	}
+
+	return &JWTManager{
+		secretKey:     []byte(secret),
+		tokenDuration: tokenDuration,
+		issuer:        issuer,
+	}
+}
+
+func (m *JWTManager) GenerateToken(userID int, username string, fullName string, tokenType string, now time.Time) (string, error) {
+
+	duration, exists := m.tokenDuration[tokenType]
+	if !exists {
+		return "", fmt.Errorf("invalid token type: %s", tokenType)
+	}
+
+	claimToken := ClaimToken{
+		UserID:   userID,
+		Username: username,
+		FullName: fullName,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    m.issuer,
+			IssuedAt:  jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(now.Add(duration)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimToken)
+	resultToken, err := token.SignedString(m.secretKey)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate token: %w", err)
+	}
+	return resultToken, nil
+}
+
+func (m *JWTManager) ValidateToken(tokenString string) (*ClaimToken, error) {
+
+	claimToken := &ClaimToken{}
+	jwtToken, err := jwt.ParseWithClaims(tokenString, claimToken, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("failed to validate method jwt: %v", t.Header["alg"])
+		}
+		return m.secretKey, nil
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse token jwt: %w", err)
+	}
+
+	if !jwtToken.Valid {
+		return nil, fmt.Errorf("token is not valid")
+	}
+
+	return claimToken, nil
+}

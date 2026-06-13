@@ -5,20 +5,13 @@ import (
 	"github.com/Rian-rgb/ewallet-common-lib/logger"
 	"github.com/Rian-rgb/ewallet-common-lib/redis"
 	"github.com/Rian-rgb/ewallet-common-lib/response"
+	"github.com/Rian-rgb/ewallet-common-lib/security"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"strings"
 	"time"
 )
 
-type TokenValidatorFunc func(tokenString string) (*CustomClaimsToken, error)
-
-type CustomClaimsToken struct {
-	UserID   int    `json:"user_id"`
-	Username string `json:"username"`
-	FullName string `json:"full_name"`
-	jwt.RegisteredClaims
-}
+type TokenValidatorFunc func(tokenString string) (*security.ClaimToken, error)
 
 func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Repository) gin.HandlerFunc {
 	return func(c *gin.Context) {
