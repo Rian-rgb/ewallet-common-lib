@@ -17,7 +17,6 @@ func NewClient(
 		Password: password,
 		DB:       db,
 	})
-	defer rdb.Close()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

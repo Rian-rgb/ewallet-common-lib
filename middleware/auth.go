@@ -13,7 +13,7 @@ import (
 
 type TokenValidatorFunc func(tokenString string) (*security.ClaimToken, error)
 
-func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Repository) gin.HandlerFunc {
+func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Repository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
 			codeUnauthorized    = errors.ErrUnauthorized
@@ -50,7 +50,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Repository) 
 		}
 
 		sessionKey := redis.SessionPrefix + tokenString
-		isSessioned, err := redisCl.Exists(c, sessionKey)
+		isSessioned, err := redisRepo.Exists(c, sessionKey)
 		if err != nil {
 			logger.WithContext(c).Error("redis error when checking token session: %v", err)
 			response.SendError(c, codeInternalError.ToHTTPStatus(), string(codeInternalError), "An unexpected error occurred. Please try again later.")
