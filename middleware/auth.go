@@ -6,16 +6,18 @@ import (
 	"github.com/Rian-rgb/ewallet-common-lib/redis"
 	"github.com/Rian-rgb/ewallet-common-lib/response"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"strings"
 	"time"
 )
 
-type TokenValidatorFunc func(tokenString string) (*CustomClaims, error)
+type TokenValidatorFunc func(tokenString string) (*CustomClaimsToken, error)
 
-type CustomClaims struct {
-	UserID    string
-	Email     string
-	ExpiresAt time.Time
+type CustomClaimsToken struct {
+	UserID   int    `json:"user_id"`
+	Username string `json:"username"`
+	FullName string `json:"full_name"`
+	jwt.RegisteredClaims
 }
 
 func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Repository) gin.HandlerFunc {
@@ -47,7 +49,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisCl redis.Repository) 
 			return
 		}
 
-		if time.Now().After(claim.ExpiresAt) {
+		if time.Now().Unix() > claim.ExpiresAt.Unix() {
 			logger.WithContext(c.Request.Context()).Error("token has expired, expired at: %v", claim.ExpiresAt)
 			response.SendError(c, codeUnauthorized.ToHTTPStatus(), string(codeUnauthorized), "Your token has expired. Please login again.")
 			c.Abort()
