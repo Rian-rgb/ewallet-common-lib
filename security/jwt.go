@@ -22,8 +22,8 @@ type JWTManager struct {
 func NewJWTManager(secret string, issuer string) *JWTManager {
 
 	tokenDuration := map[string]time.Duration{
-		"token":         3 * time.Hour,
-		"refresh_token": 72 * time.Hour,
+		TokenType:        3 * time.Hour,
+		RefreshTokenType: 72 * time.Hour,
 	}
 
 	return &JWTManager{
