@@ -1,5 +1,5 @@
 package redis
 
 const (
-	SessionPrefix = "session:"
+	RefreshTokenPrefix = "refresh_token:"
 )

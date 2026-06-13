@@ -15,8 +15,8 @@ func (w *RedisRepository) Exists(ctx context.Context, key string) (bool, error) 
 	return n > 0, err
 }
 
-func (w *RedisRepository) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
-	return w.Core.Set(ctx, key, value, expiration).Err()
+func (w *RedisRepository) Set(ctx context.Context, key string, value interface{}, expiration ExpiredDuration) error {
+	return w.Core.Set(ctx, key, value, time.Duration(expiration)).Err()
 }
 
 func (w *RedisRepository) Delete(ctx context.Context, key string) error {

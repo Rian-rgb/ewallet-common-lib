@@ -15,11 +15,7 @@ type TokenValidatorFunc func(tokenString string) (*security.ClaimToken, error)
 
 func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Repository) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var (
-			codeUnauthorized    = errors.ErrUnauthorized
-			codeInternalError   = errors.ErrInternalError
-			codeSessionNotFound = errors.ErrSessionNotFound
-		)
+		codeUnauthorized := errors.ErrUnauthorized
 
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -45,22 +41,6 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Repository
 		if time.Now().Unix() > claim.ExpiresAt.Unix() {
 			logger.WithContext(c.Request.Context()).Error("token has expired, expired at: %v", claim.ExpiresAt)
 			response.SendError(c, codeUnauthorized.ToHTTPStatus(), string(codeUnauthorized), "Your token has expired. Please login again.")
-			c.Abort()
-			return
-		}
-
-		sessionKey := redis.SessionPrefix + tokenString
-		isSessioned, err := redisRepo.Exists(c, sessionKey)
-		if err != nil {
-			logger.WithContext(c).Error("redis error when checking token session: %v", err)
-			response.SendError(c, codeInternalError.ToHTTPStatus(), string(codeInternalError), "An unexpected error occurred. Please try again later.")
-			c.Abort()
-			return
-		}
-
-		if !isSessioned {
-			logger.WithContext(c).Error("failed to exist user session")
-			response.SendError(c, codeSessionNotFound.ToHTTPStatus(), string(codeSessionNotFound), "User session not found.")
 			c.Abort()
 			return
 		}

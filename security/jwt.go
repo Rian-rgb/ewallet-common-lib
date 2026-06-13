@@ -15,30 +15,19 @@ type ClaimToken struct {
 
 type JWTManager struct {
 	secretKey     []byte
-	tokenDuration map[string]time.Duration
+	tokenDuration time.Duration
 	issuer        string
 }
 
 func NewJWTManager(secret string, issuer string) *JWTManager {
-
-	tokenDuration := map[string]time.Duration{
-		TokenType:        3 * time.Hour,
-		RefreshTokenType: 72 * time.Hour,
-	}
-
 	return &JWTManager{
 		secretKey:     []byte(secret),
-		tokenDuration: tokenDuration,
+		tokenDuration: 15 * time.Minute,
 		issuer:        issuer,
 	}
 }
 
 func (m *JWTManager) GenerateToken(userID int, username string, fullName string, tokenType string, now time.Time) (string, error) {
-
-	duration, exists := m.tokenDuration[tokenType]
-	if !exists {
-		return "", fmt.Errorf("invalid token type: %s", tokenType)
-	}
 
 	claimToken := ClaimToken{
 		UserID:   userID,
@@ -47,7 +36,7 @@ func (m *JWTManager) GenerateToken(userID int, username string, fullName string,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    m.issuer,
 			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(duration)),
+			ExpiresAt: jwt.NewNumericDate(now.Add(m.tokenDuration)),
 		},
 	}
 
