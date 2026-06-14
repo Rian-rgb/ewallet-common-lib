@@ -1,5 +1,7 @@
 package response
 
+import "github.com/Rian-rgb/ewallet-common-lib/errors"
+
 type SuccessResponse struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
@@ -7,8 +9,8 @@ type SuccessResponse struct {
 }
 
 type ErrorResponse struct {
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	ErrorCode errors.Code `json:"error_code"`
+	Message   string      `json:"message"`
 }
 
 type ValidationErrorField struct {
@@ -17,7 +19,7 @@ type ValidationErrorField struct {
 }
 
 type BadRequestResponse struct {
-	ErrorCode string                 `json:"error_code"`
+	ErrorCode errors.Code            `json:"error_code"`
 	Message   string                 `json:"message"`
 	Errors    []ValidationErrorField `json:"errors"`
 }

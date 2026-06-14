@@ -1,6 +1,7 @@
 package response
 
 import (
+	"github.com/Rian-rgb/ewallet-common-lib/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,14 +20,14 @@ func SendSuccessWithMeta(c *gin.Context, httpCode int, message string, data inte
 	})
 }
 
-func SendError(c *gin.Context, httpCode int, errorCode string, message string) {
+func SendError(c *gin.Context, httpCode int, errorCode errors.Code, message string) {
 	c.JSON(httpCode, ErrorResponse{
 		ErrorCode: errorCode,
 		Message:   message,
 	})
 }
 
-func SendBadRequest(c *gin.Context, errorCode string, message string, validationErrors []ValidationErrorField) {
+func SendBadRequest(c *gin.Context, errorCode errors.Code, message string, validationErrors []ValidationErrorField) {
 	c.JSON(400, BadRequestResponse{
 		ErrorCode: errorCode,
 		Message:   message,
