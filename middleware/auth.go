@@ -19,7 +19,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc) gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			logger.WithContext(c.Request.Context()).Error("authorization header is empty")
-			response.SendError(c, codeUnauthorized.ToHTTPStatus(), string(codeUnauthorized), response.UnauthorizedMessage)
+			response.SendError(c, codeUnauthorized.ToHTTPStatus(), codeUnauthorized, response.UnauthorizedMessage)
 			c.Abort()
 			return
 		}
@@ -32,7 +32,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc) gin.HandlerFunc {
 		claim, err := validateToken(tokenString)
 		if err != nil {
 			logger.WithContext(c.Request.Context()).Error("failed to validate token: %v", err)
-			response.SendError(c, codeUnauthorized.ToHTTPStatus(), string(codeUnauthorized), response.InvalidTokenMessage)
+			response.SendError(c, codeUnauthorized.ToHTTPStatus(), codeUnauthorized, response.InvalidTokenMessage)
 			c.Abort()
 			return
 		}
@@ -40,7 +40,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc) gin.HandlerFunc {
 		expTime, err := claim.GetExpirationTime()
 		if err != nil || time.Now().After(expTime.Time) {
 			logger.WithContext(c).Error("token has expired, expired at: %v", claim.ExpiresAt)
-			response.SendError(c, codeUnauthorized.ToHTTPStatus(), string(codeUnauthorized), response.TokenExpiredMessage)
+			response.SendError(c, codeUnauthorized.ToHTTPStatus(), codeUnauthorized, response.TokenExpiredMessage)
 			c.Abort()
 			return
 		}
