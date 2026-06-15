@@ -14,7 +14,7 @@ type TokenValidatorFunc func(tokenString string) (*security.ClaimToken, error)
 
 func AuthMiddleware(validateToken TokenValidatorFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		codeUnauthorized := errors.ErrUnauthorized
+		codeUnauthorized := errors.ErrCodeUnauthorized
 
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

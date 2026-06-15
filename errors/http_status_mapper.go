@@ -4,22 +4,22 @@ import "net/http"
 
 func (c Code) ToHTTPStatus() int {
 	switch c {
-	case ErrInternalServerError:
+	case ErrCodeUnknownError:
 		return http.StatusInternalServerError
 
-	case ErrBadRequest, ErrInvalidStatusTransition:
+	case ErrCodeBadRequest, ErrCodeInvalidStatusTransition:
 		return http.StatusBadRequest
 
-	case ErrUnauthorized, ErrInvalidPassword:
+	case ErrCodeUnauthorized, ErrCodeInvalidPassword:
 		return http.StatusUnauthorized
 
-	case ErrForbidden:
+	case ErrCodeForbidden:
 		return http.StatusForbidden
 
-	case ErrNotFound, ErrUserNotFound, ErrTransactionNotFound, ErrSessionNotFound:
+	case ErrCodeNotFound, ErrCodeUserNotFound, ErrCodeTransactionNotFound, ErrCodeSessionNotFound:
 		return http.StatusNotFound
 
-	case ErrInsufficientBalance:
+	case ErrCodeInsufficientBalance:
 		return http.StatusUnprocessableEntity // HTTP 422 cocok untuk bisnis logic yang gagal
 
 	default:

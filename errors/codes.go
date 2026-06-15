@@ -5,19 +5,20 @@ type Code string
 const (
 
 	// ---- GENERAL ERRORS ----
-	ErrInternalServerError Code = "INTERNAL_SERVER_ERROR"
-	ErrBadRequest          Code = "BAD_REQUEST"
-	ErrUnauthorized        Code = "UNAUTHORIZED"
-	ErrForbidden           Code = "FORBIDDEN"
-	ErrNotFound            Code = "NOT_FOUND"
+	ErrCodeUnknownError        Code = "UNKNOWN_ERROR"
+	ErrCodeInternalServerError Code = "INTERNAL_SERVER_ERROR"
+	ErrCodeBadRequest          Code = "BAD_REQUEST"
+	ErrCodeUnauthorized        Code = "UNAUTHORIZED"
+	ErrCodeForbidden           Code = "FORBIDDEN"
+	ErrCodeNotFound            Code = "NOT_FOUND"
 
 	// ---- AUTH & USER ERRORS ----
-	ErrUserNotFound    Code = "USER_NOT_FOUND"
-	ErrSessionNotFound Code = "SESSION_NOT_FOUND"
-	ErrInvalidPassword Code = "INVALID_PASSWORD"
+	ErrCodeUserNotFound    Code = "USER_NOT_FOUND"
+	ErrCodeSessionNotFound Code = "SESSION_NOT_FOUND"
+	ErrCodeInvalidPassword Code = "INVALID_PASSWORD"
 
 	// ---- WALLET & TRANSACTION ERRORS ----
-	ErrInvalidStatusTransition Code = "INVALID_STATUS_TRANSITION"
-	ErrTransactionNotFound     Code = "TRANSACTION_NOT_FOUND"
-	ErrInsufficientBalance     Code = "INSUFFICIENT_BALANCE"
+	ErrCodeInvalidStatusTransition Code = "INVALID_STATUS_TRANSITION"
+	ErrCodeTransactionNotFound     Code = "TRANSACTION_NOT_FOUND"
+	ErrCodeInsufficientBalance     Code = "INSUFFICIENT_BALANCE"
 )
