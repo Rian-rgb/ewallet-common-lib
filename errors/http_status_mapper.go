@@ -4,7 +4,7 @@ import "net/http"
 
 func (c Code) ToHTTPStatus() int {
 	switch c {
-	case ErrInternalError:
+	case ErrInternalServerError:
 		return http.StatusInternalServerError
 
 	case ErrBadRequest, ErrInvalidStatusTransition:

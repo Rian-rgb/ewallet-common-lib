@@ -23,11 +23,8 @@ func MapValidationErrors(err error) []ValidationErrorField {
 	for _, f := range validationErrors {
 		var msg string
 
-		// f.Field() defaultnya mengambil nama field struct (misal: "Username")
-		// Kita ubah ke huruf kecil agar cocok dengan format JSON key umum
 		fieldName := strings.ToLower(f.Field())
 
-		// Atur pesan error kustom bahasa Indonesia berdasarkan Tag validatornya
 		switch f.Tag() {
 		case "required":
 			msg = fmt.Sprintf("Field %s wajib diisi", fieldName)
