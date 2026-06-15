@@ -27,7 +27,7 @@ func NewJWTManager(secret string, issuer string) *JWTManager {
 	}
 }
 
-func (m *JWTManager) GenerateToken(userID int, username string, fullName string, tokenType string, now time.Time) (string, error) {
+func (m *JWTManager) GenerateToken(userID int, username string, fullName string, now time.Time) (string, error) {
 
 	claimToken := ClaimToken{
 		UserID:   userID,
