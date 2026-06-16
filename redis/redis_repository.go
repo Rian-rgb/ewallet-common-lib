@@ -10,6 +10,10 @@ type RedisRepository struct {
 	Core *redis.Client
 }
 
+func (w *RedisRepository) Get(ctx context.Context, key string) (string, error) {
+	return w.Core.Get(ctx, key).Result()
+}
+
 func (w *RedisRepository) Exists(ctx context.Context, key string) (bool, error) {
 	n, err := w.Core.Exists(ctx, key).Result()
 	return n > 0, err
