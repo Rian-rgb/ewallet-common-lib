@@ -5,15 +5,12 @@ import (
 	"github.com/Rian-rgb/ewallet-common-lib/logger"
 	"github.com/Rian-rgb/ewallet-common-lib/redis"
 	"github.com/Rian-rgb/ewallet-common-lib/response"
-	"github.com/Rian-rgb/ewallet-common-lib/security"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"time"
 )
 
-type TokenValidatorFunc func(tokenString string) (*security.ClaimToken, error)
-
-func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepository) gin.HandlerFunc {
+func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepository) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var (
 			errCodeUnauthorized        = errors.ErrCodeUnauthorized
@@ -28,12 +25,12 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepos
 			return
 		}
 
-		tokenString := authHeader
+		refreshTokenString := authHeader
 		if strings.HasPrefix(authHeader, "Bearer ") {
-			tokenString = strings.TrimPrefix(authHeader, "Bearer ")
+			refreshTokenString = strings.TrimPrefix(authHeader, "Bearer ")
 		}
 
-		claim, err := validateToken(tokenString)
+		claim, err := validateToken(refreshTokenString)
 		if err != nil {
 			logger.WithContext(ctx).Error("failed to validate token: ", err)
 			response.SendError(
@@ -59,8 +56,8 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepos
 			return
 		}
 
-		userTokenKey := redis.UserTokenPrefix + tokenString
-		exists, err := redisRepo.Exists(ctx, userTokenKey)
+		refreshTokenKey := redis.RefreshTokenPrefix + refreshTokenString
+		exists, err := redisRepo.Exists(ctx, refreshTokenKey)
 		if err != nil {
 			logger.WithContext(ctx).Error("failed to get token from redis: ", err)
 			response.SendError(

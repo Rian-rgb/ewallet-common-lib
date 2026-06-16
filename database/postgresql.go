@@ -35,6 +35,6 @@ func NewPostgresClient(cfg PostgresConfig) (*gorm.DB, error) {
 		sqlDB.SetConnMaxLifetime(30 * time.Minute)
 	}
 
-	logger.Info("Successfully connected to database: %s", cfg.DBName)
+	logger.Info("Successfully connected to database postgresql")
 	return db, nil
 }
