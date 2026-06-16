@@ -21,13 +21,13 @@ type JWTManager struct {
 
 func NewJWTManager(secret string, issuer string) *JWTManager {
 	return &JWTManager{
-		secretKey:     []byte(secret),
-		tokenDuration: 15 * time.Minute,
-		issuer:        issuer,
+		secretKey: []byte(secret),
+		issuer:    issuer,
 	}
 }
 
-func (m *JWTManager) GenerateToken(userID int, username string, fullName string, now time.Time) (string, error) {
+func (m *JWTManager) GenerateToken(userID int, username string, fullName string, expiration ExpiredDuration) (string, error) {
+	now := time.Now()
 
 	claimToken := ClaimToken{
 		UserID:   userID,
@@ -36,7 +36,7 @@ func (m *JWTManager) GenerateToken(userID int, username string, fullName string,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    m.issuer,
 			IssuedAt:  jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(m.tokenDuration)),
+			ExpiresAt: jwt.NewNumericDate(now.Add(time.Duration(expiration))),
 		},
 	}
 
