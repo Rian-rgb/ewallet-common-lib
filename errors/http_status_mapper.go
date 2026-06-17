@@ -16,11 +16,16 @@ func (c Code) ToHTTPStatus() int {
 	case ErrCodeForbidden:
 		return http.StatusForbidden
 
-	case ErrCodeNotFound, ErrCodeUserNotFound, ErrCodeTransactionNotFound, ErrCodeSessionNotFound:
+	case ErrCodeNotFound,
+		ErrCodeUserNotFound,
+		ErrCodeTransactionNotFound,
+		ErrCodeSessionNotFound,
+		ErrCodeWalletNotFound:
+
 		return http.StatusNotFound
 
 	case ErrCodeInsufficientBalance:
-		return http.StatusUnprocessableEntity // HTTP 422 cocok untuk bisnis logic yang gagal
+		return http.StatusUnprocessableEntity // HTTP 422 suitable for bussiness logic that failed
 
 	default:
 		return http.StatusInternalServerError

@@ -18,6 +18,7 @@ const (
 	ErrCodeInvalidPassword Code = "INVALID_PASSWORD"
 
 	// ---- WALLET & TRANSACTION ERRORS ----
+	ErrCodeWalletNotFound          Code = "WALLET_NOT_FOUND"
 	ErrCodeInvalidStatusTransition Code = "INVALID_STATUS_TRANSITION"
 	ErrCodeTransactionNotFound     Code = "TRANSACTION_NOT_FOUND"
 	ErrCodeInsufficientBalance     Code = "INSUFFICIENT_BALANCE"
