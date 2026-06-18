@@ -6,12 +6,12 @@ import (
 
 const GinTokenKey = "TokenClaims"
 
-func SetGinToken(c *gin.Context, token string) {
-	c.Set(GinTokenKey, token)
+func SetGinToken(ctx *gin.Context, token string) {
+	ctx.Set(GinTokenKey, token)
 }
 
-func GetGinToken(c *gin.Context) (Token, bool) {
-	val, exists := c.Get(GinTokenKey)
+func GetGinToken(ctx *gin.Context) (Token, bool) {
+	val, exists := ctx.Get(GinTokenKey)
 	if !exists {
 		return Token{}, false
 	}
