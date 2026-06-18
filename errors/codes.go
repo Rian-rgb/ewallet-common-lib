@@ -20,6 +20,7 @@ const (
 	// ---- WALLET & TRANSACTION ERRORS ----
 	ErrCodeWalletNotFound          Code = "WALLET_NOT_FOUND"
 	ErrCodeInvalidStatusTransition Code = "INVALID_STATUS_TRANSITION"
+	ErrCodeDuplicateReference      Code = "DUPLICATE_REFERENCE"
 	ErrCodeTransactionNotFound     Code = "TRANSACTION_NOT_FOUND"
 	ErrCodeInsufficientBalance     Code = "INSUFFICIENT_BALANCE"
 )
