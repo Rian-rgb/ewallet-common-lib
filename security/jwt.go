@@ -9,7 +9,7 @@ import (
 type ClaimToken struct {
 	UserID   int    `json:"user_id"`
 	Username string `json:"username"`
-	FullName string `json:"fullName"`
+	FullName string `json:"full_name"`
 	jwt.RegisteredClaims
 }
 

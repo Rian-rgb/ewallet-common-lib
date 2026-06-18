@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/Rian-rgb/ewallet-common-lib/errors"
 	"github.com/Rian-rgb/ewallet-common-lib/logger"
+	contextUtil "github.com/Rian-rgb/ewallet-common-lib/pkg/context"
 	"github.com/Rian-rgb/ewallet-common-lib/redis"
 	"github.com/Rian-rgb/ewallet-common-lib/response"
 	"github.com/Rian-rgb/ewallet-common-lib/security"
@@ -84,7 +85,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepos
 			ctx.Abort()
 		}
 
-		ctx.Set("token", claim)
+		contextUtil.SetGinToken(ctx, tokenString)
 		ctx.Next()
 	}
 }
