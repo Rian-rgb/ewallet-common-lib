@@ -28,7 +28,7 @@ func (c Code) ToHTTPStatus() int {
 		return http.StatusConflict
 
 	case ErrCodeInsufficientBalance:
-		return http.StatusUnprocessableEntity // HTTP 422 suitable for bussiness logic that failed
+		return http.StatusUnprocessableEntity // HTTP 422 suitable for bussiness logic failed
 
 	default:
 		return http.StatusInternalServerError
