@@ -85,7 +85,12 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepos
 			ctx.Abort()
 		}
 
-		contextUtil.SetGinToken(ctx, tokenString)
+		tokenData := contextUtil.Token{
+			UserID:   claim.UserID,
+			Username: claim.Username,
+			FullName: claim.FullName,
+		}
+		contextUtil.SetGinToken(ctx, tokenData)
 		ctx.Next()
 	}
 }

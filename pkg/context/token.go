@@ -6,7 +6,7 @@ import (
 
 const GinTokenKey = "TokenClaims"
 
-func SetGinToken(ctx *gin.Context, token string) {
+func SetGinToken(ctx *gin.Context, token Token) {
 	ctx.Set(GinTokenKey, token)
 }
 
