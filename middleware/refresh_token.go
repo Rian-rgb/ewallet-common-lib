@@ -82,7 +82,12 @@ func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Re
 			ctx.Abort()
 		}
 
-		contextUtil.SetGinToken(ctx, refreshTokenString)
+		refreshTokenData := contextUtil.Token{
+			UserID:   claim.UserID,
+			Username: claim.Username,
+			FullName: claim.FullName,
+		}
+		contextUtil.SetGinToken(ctx, refreshTokenData)
 		ctx.Next()
 	}
 }
