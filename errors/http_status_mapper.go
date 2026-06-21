@@ -25,7 +25,7 @@ func (c Code) ToHTTPStatus() int {
 		return http.StatusNotFound
 
 	case ErrCodeDuplicateReference:
-		return http.StatusConflict
+		return http.StatusConflict // HTTP 409 sutable for conflict data in database
 
 	case ErrCodeInsufficientBalance:
 		return http.StatusUnprocessableEntity // HTTP 422 suitable for bussiness logic failed

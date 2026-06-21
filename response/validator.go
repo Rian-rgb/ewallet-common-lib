@@ -62,6 +62,20 @@ func MapValidationErrors(err error) []ValidationErrorField {
 				f.Param(),
 			)
 
+		case "gte":
+			msg = fmt.Sprintf(
+				"The %s field must be greater than or equal to %s",
+				fieldName,
+				f.Param(),
+			)
+
+		case "lte":
+			msg = fmt.Sprintf(
+				"The %s field must be less than or equal to %s",
+				fieldName,
+				f.Param(),
+			)
+
 		default:
 			msg = fmt.Sprintf(
 				"The %s field failed validation for rule '%s'",
