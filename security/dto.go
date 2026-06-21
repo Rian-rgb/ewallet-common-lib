@@ -1,4 +1,4 @@
-package context
+package security
 
 type Token struct {
 	UserID   int

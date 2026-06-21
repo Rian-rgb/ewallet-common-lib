@@ -3,9 +3,9 @@ package middleware
 import (
 	"github.com/Rian-rgb/ewallet-common-lib/errors"
 	"github.com/Rian-rgb/ewallet-common-lib/logger"
-	contextUtil "github.com/Rian-rgb/ewallet-common-lib/pkg/context"
 	"github.com/Rian-rgb/ewallet-common-lib/redis"
 	"github.com/Rian-rgb/ewallet-common-lib/response"
+	"github.com/Rian-rgb/ewallet-common-lib/security"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"time"
@@ -82,12 +82,12 @@ func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Re
 			ctx.Abort()
 		}
 
-		refreshTokenData := contextUtil.Token{
+		refreshTokenData := security.Token{
 			UserID:   claim.UserID,
 			Username: claim.Username,
 			FullName: claim.FullName,
 		}
-		contextUtil.SetGinToken(ctx, refreshTokenData)
+		security.SetGinToken(ctx, refreshTokenData)
 		ctx.Next()
 	}
 }
