@@ -8,7 +8,6 @@ import (
 	"github.com/Rian-rgb/ewallet-common-lib/security"
 	"github.com/gin-gonic/gin"
 	"strings"
-	"time"
 )
 
 func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepository) gin.HandlerFunc {
@@ -39,19 +38,6 @@ func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Re
 				errCodeUnauthorized.ToHTTPStatus(),
 				errCodeUnauthorized,
 				response.InvalidTokenMessage,
-			)
-			ctx.Abort()
-			return
-		}
-
-		expTime, err := claim.GetExpirationTime()
-		if err != nil || time.Now().After(expTime.Time) {
-			logger.WithContext(ctx).Error("token has expired, expired at: ", claim.ExpiresAt)
-			response.SendError(
-				ctx,
-				errCodeUnauthorized.ToHTTPStatus(),
-				errCodeUnauthorized,
-				response.TokenExpiredMessage,
 			)
 			ctx.Abort()
 			return
