@@ -32,7 +32,7 @@ func SetupPostgresContainer() (*TestDBContainer, error) {
 
 	dsn, err := container.ConnectionString(
 		ctx,
-		"sslmode=disable TimeZone=Asia/Jakarta",
+		"sslmode=disable",
 	)
 	if err != nil {
 		_ = container.Terminate(ctx)
