@@ -5,56 +5,59 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"io"
 )
 
-func Encrypt(key []byte, plaintext string) (string, error) {
+func Encrypt(plaintext []byte, key []byte) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
 	}
 
-	gcm, err := cipher.NewGCM(block)
+	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
 		return "", err
 	}
 
-	nonce := make([]byte, gcm.NonceSize())
-
+	nonce := make([]byte, aesGCM.NonceSize())
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
 		return "", err
 	}
 
-	ciphertext := gcm.Seal(nonce, nonce, []byte(plaintext), nil)
+	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
 
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
 }
 
-func Decrypt(key []byte, encrypted string) (string, error) {
-	data, err := base64.StdEncoding.DecodeString(encrypted)
+func Decrypt(cryptoText string, key []byte) ([]byte, error) {
+	ciphertext, err := base64.StdEncoding.DecodeString(cryptoText)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	gcm, err := cipher.NewGCM(block)
+	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	nonceSize := gcm.NonceSize()
+	nonceSize := aesGCM.NonceSize()
+	if len(ciphertext) < nonceSize {
+		return nil, errors.New("ciphertext is too short")
+	}
 
-	nonce := data[:nonceSize]
-	ciphertext := data[nonceSize:]
+	nonce, actualCiphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
 
-	plain, err := gcm.Open(nil, nonce, ciphertext, nil)
+	plaintext, err := aesGCM.Open(nil, nonce, actualCiphertext, nil)
 	if err != nil {
-		return "", err
+		return nil, fmt.Errorf("decryption failed (data might have been tampered with): %v", err)
 	}
 
-	return string(plain), nil
+	return plaintext, nil
 }
