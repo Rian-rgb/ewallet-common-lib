@@ -2,6 +2,7 @@ package security
 
 import (
 	"fmt"
+	"github.com/Rian-rgb/ewallet-common-lib/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
@@ -26,8 +27,15 @@ func NewJWTManager(secret string, issuer string) *JWTManager {
 	}
 }
 
-func (m *JWTManager) GenerateToken(userID int, username string, fullName string, expiration ExpiredDuration) (string, error) {
+func (m *JWTManager) GenerateToken(
+	userID int,
+	username string,
+	fullName string,
+	expiration ExpiredDuration,
+) (token string, jti string, err error) {
+
 	now := time.Now()
+	jti = utils.GenerateUUID()
 
 	claimToken := ClaimToken{
 		UserID:   userID,
@@ -37,15 +45,16 @@ func (m *JWTManager) GenerateToken(userID int, username string, fullName string,
 			Issuer:    m.issuer,
 			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(time.Duration(expiration))),
+			ID:        jti,
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimToken)
-	resultToken, err := token.SignedString(m.secretKey)
+	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimToken)
+	token, err = generateToken.SignedString(m.secretKey)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
+		return "", "", fmt.Errorf("failed to generate token: %w", err)
 	}
-	return resultToken, nil
+	return token, jti, nil
 }
 
 func (m *JWTManager) ValidateToken(tokenString string) (*ClaimToken, error) {
