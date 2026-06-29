@@ -49,7 +49,7 @@ func RefreshTokenMiddleware(
 			return
 		}
 
-		refreshTokenKey := redis.RefreshTokenPrefix + encryptRefreshToken
+		refreshTokenKey := redis.RefreshTokenPrefix + claim.ID
 		exists, err := redisRepo.Exists(ctx, refreshTokenKey)
 		if err != nil {
 			logger.WithContext(ctx).Error("failed to get token from redis: ", err)
