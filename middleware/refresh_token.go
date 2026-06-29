@@ -64,7 +64,7 @@ func RefreshTokenMiddleware(
 		}
 
 		if !exists {
-			logger.WithContext(ctx).Error("token no exists in redis")
+			logger.WithContext(ctx).Error("refresh token no exists in redis")
 			response.SendError(
 				ctx,
 				errCodeUnauthorized.ToHTTPStatus(),

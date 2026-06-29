@@ -45,7 +45,7 @@ func AuthMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepos
 			return
 		}
 
-		userTokenKey := redis.UserTokenPrefix + tokenString
+		userTokenKey := redis.UserTokenPrefix + claim.ID
 		exists, err := redisRepo.Exists(ctx, userTokenKey)
 		if err != nil {
 			logger.WithContext(ctx).Error("failed to get token from redis: ", err)
