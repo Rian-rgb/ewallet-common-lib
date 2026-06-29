@@ -10,7 +10,11 @@ import (
 	"strings"
 )
 
-func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.RedisRepository) gin.HandlerFunc {
+func RefreshTokenMiddleware(
+	validateToken TokenValidatorFunc,
+	redisRepo redis.RedisRepository,
+	secretKeyEncrypt string,
+) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var (
 			errCodeUnauthorized        = errors.ErrCodeUnauthorized
@@ -25,12 +29,14 @@ func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Re
 			return
 		}
 
-		refreshTokenString := authHeader
+		encryptRefreshToken := authHeader
 		if strings.HasPrefix(authHeader, "Bearer ") {
-			refreshTokenString = strings.TrimPrefix(authHeader, "Bearer ")
+			encryptRefreshToken = strings.TrimPrefix(authHeader, "Bearer ")
 		}
 
-		claim, err := validateToken(refreshTokenString)
+		refreshToken, err := security.Decrypt(encryptRefreshToken, []byte(secretKeyEncrypt))
+
+		claim, err := validateToken(string(refreshToken))
 		if err != nil {
 			logger.WithContext(ctx).Error("failed to validate token: ", err)
 			response.SendError(
@@ -43,7 +49,7 @@ func RefreshTokenMiddleware(validateToken TokenValidatorFunc, redisRepo redis.Re
 			return
 		}
 
-		refreshTokenKey := redis.RefreshTokenPrefix + refreshTokenString
+		refreshTokenKey := redis.RefreshTokenPrefix + encryptRefreshToken
 		exists, err := redisRepo.Exists(ctx, refreshTokenKey)
 		if err != nil {
 			logger.WithContext(ctx).Error("failed to get token from redis: ", err)
